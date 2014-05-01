@@ -7,42 +7,61 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
+/**
+ * This class sends http requests and parses the contents of the string. The
+ * resulting img links are stored in an array in this class which is accessible
+ * to all
+ * 
+ * @author E Wong
+ * 
+ */
 public class ImageParse {
+	//initialize fields
+	private Context c;
+	private String[] parsedContent;
+	private URL url;
+	private HttpURLConnection connection;
 
-	String[] parsedContent;
-	String link;
-
-	public ImageParse() {
+	public ImageParse(Context context) {
+		c = context;
 
 	}
-	
+
 	/**
-	 * returns URL of img links
+	 * sends http request
 	 * @param link
 	 * @return
 	 */
-	public String[] parseURL(String link) {
+	public InputStream sendhttpRequest(String link) {
 		try {
-			// parse url and open connection to access http
-			URL url = new URL(link);
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			readStream(con.getInputStream());
+			url = new URL(link);
+			connection = (HttpURLConnection) url.openConnection();
+			Log.d("sucess", link);
+			return connection.getInputStream();
 			
-			// debugging purposes
-			String TAG = "parse";
-			for (int i = 0; i < parsedContent.length; i++) {
-				Log.d(TAG, parsedContent[i]);
-			}
-			return parsedContent;
-
 		} catch (Exception e) {
-			String TAG = "ERROR";
-			Log.d(TAG, e + "");
 			e.printStackTrace();
 			return null;
+
 		}
+	}
+
+	/**
+	 * returns URL of img links
+	 * 
+	 * @param link
+	 * @return
+	 */
+	public String[] getURLs() {
+		if (parsedContent == null) {
+			String TAG = "ERROR NULL STRING";
+			Log.d(TAG, "getURLs");
+		}
+		return parsedContent;
 	}
 
 	/**
@@ -51,20 +70,29 @@ public class ImageParse {
 	 * 
 	 * @param in
 	 */
-	private void readStream(InputStream in) {
+	public void parseURL(String urlLink) {
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new InputStreamReader(in));
-			String content = "";
+			InputStream stream = sendhttpRequest(urlLink);
+			//if stream is null, then replace invalid url with default url
+			if (stream == null) {
+				stream = sendhttpRequest("http://api.dribbble.com/shots/everyone");
+				String warningTAG = "User doesn't exist, please try again";
+				Log.d(warningTAG, urlLink);
+				
+			}
+			
 			// set content string to the contents in http site
+			reader = new BufferedReader(new InputStreamReader(stream));
+			String content = "";
 			while ((content = reader.readLine()) != null) {
-
 				if (content != null) {
 					// split the string to identify image link urls
 					parsedContent = content.split("image_url\":\"");
 					for (int i = 0; i < parsedContent.length; i++) {
 
-						// parse string to remove extra data at the end of url link
+						// parse string to remove extra data at the end of url
+						// link
 						// application only handles .png and .jpq extensions
 						parsedContent[i] = parsedContent[i].split(".png")[0]
 								+ ".png";

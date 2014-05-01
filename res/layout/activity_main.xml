@@ -8,70 +8,94 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    <TextView
-        android:id="@+id/frequency_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/edit_frequency"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="54dp"
-        android:layout_marginLeft="25dp"
-        android:text="@string/frequency"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-    <TextView
-        android:id="@+id/text_username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/username_edit"
-        android:layout_alignLeft="@+id/frequency_text"
-        android:layout_marginBottom="49dp"
-        android:text="@string/user_name"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-    <EditText
-        android:id="@+id/edit_frequency"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/frequency_text"
-        android:layout_below="@+id/username_edit"
-        android:layout_marginTop="105dp"
-        android:hint="@string/frequency_hint"
-        android:ems="10"
-        android:inputType="number" />
-
     <Button
-        android:id="@+id/send_username"
+        android:id="@+id/userbutton"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/edit_frequency"
-        android:layout_alignRight="@+id/send_frequency"
+        android:layout_alignBottom="@+id/edituser"
+        android:layout_alignParentRight="true"
         android:text="@string/send" />
 
     <EditText
-        android:id="@+id/username_edit"
+        android:id="@+id/edituser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv1"
+        android:layout_marginTop="34dp"
+        android:layout_toLeftOf="@+id/userbutton"
+        android:hint="@string/username_hint"
+        android:lines="1"
+        android:singleLine="true"
+        android:ems="10" />
+
+    <TextView
+        android:id="@+id/tv2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tv1"
+        android:layout_below="@+id/edituser"
+        android:layout_marginTop="82dp"
+        android:text="@string/frequency" />
+
+    <TextView
+        android:id="@+id/tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/edituser"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="77dp"
+        android:text="@string/user_name" />
+
+    <TextView
+        android:id="@+id/offline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="116dp"
-        android:layout_toLeftOf="@+id/send_username"
+        android:layout_alignRight="@+id/tv2"
+        android:layout_marginTop="18dp"
+        android:text="OFFLINE MODE"
+        android:textColor="@color/red"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/warning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/offline"
+        android:layout_toLeftOf="@+id/userbutton"
+        android:text="@string/warning_message" />
+
+    <Button
+        android:id="@+id/freqbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/userbutton"
+        android:layout_below="@+id/tv2"
+        android:layout_marginTop="32dp"
+        android:text="@string/send" />
+
+    <EditText
+        android:id="@+id/editfreq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/freqbutton"
+        android:layout_alignBottom="@+id/freqbutton"
+        android:layout_alignLeft="@+id/tv2"
         android:ems="10"
-        android:hint="@string/username_hint"
-        android:lines="1"
-        android:singleLine="true" >
+        android:hint="enter frequency"
+        android:inputType="number" >
 
         <requestFocus />
     </EditText>
 
-    <Button
-        android:id="@+id/send_frequency"
-        style="?android:attr/buttonStyleSmall"
+    <TextView
+        android:id="@+id/msgstats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/edit_frequency"
-        android:layout_marginLeft="16dp"
-        android:layout_toRightOf="@+id/frequency_text"
-        android:text="@string/send" />
+        android:layout_alignRight="@+id/tv1"
+        android:layout_below="@+id/freqbutton"
+        android:layout_marginTop="40dp"
+         />
 
 </RelativeLayout>

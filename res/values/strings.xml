@@ -9,4 +9,7 @@
 	<string name="frequency_hint">enter frequency</string>
 	<string name="username_hint">enter username</string>
 	<string name="send">Send</string>
+	<string name="toggle">Stop background change</string>
+	<color name="red">#ff0000</color>
+	<string name="warning_message">Resume by connecting to network</string>
 </resources>
