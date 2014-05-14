@@ -22,10 +22,10 @@ import android.widget.Toast;
 public class ImageParse {
 	//initialize fields
 	private Context c;
-	private String[] parsedContent;
+	private List<String> parsedContent;
 	private URL url;
 	private HttpURLConnection connection;
-
+	
 	public ImageParse(Context context) {
 		c = context;
 
@@ -56,7 +56,7 @@ public class ImageParse {
 	 * @param link
 	 * @return
 	 */
-	public String[] getURLs() {
+	public List<String> getURLs() {
 		if (parsedContent == null) {
 			String TAG = "ERROR NULL STRING";
 			Log.d(TAG, "getURLs");
@@ -106,6 +106,20 @@ public class ImageParse {
 
 				}
 			}
+			
+			//new changes (add JSON), need to import
+			JSONObject jsonObj = new JSONObject(content);
+			JSONArray jsonArray = new JSONArray("shots");
+			
+			for(int i = 0; i < jsonArray.length(); i++){
+				JSONObject tmp = jsonArray.get(i);
+				
+				String imgURL = tmp.getString("image_url");
+				if(!imgURL.contains("gif")) parsedContent.add(imgURL);
+			}
+			
+			
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
