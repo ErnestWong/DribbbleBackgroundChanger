@@ -22,115 +22,86 @@ import android.widget.Toast;
 public class ImageParse {
 	//initialize fields
 	private Context c;
-	private List<String> parsedContent;
-	private URL url;
-	private HttpURLConnection connection;
+
+	private final String TAG_SHOTS = "shots";
+	private final String TAG_IMAGE_URL = "image_url";
+	private final String TAG_IMAGE_WIDTH = "width";
+	private final String TAG_IMAGE_HEIGHT = "height";
 	
+	private final backupURL = "http://api.dribbble.com/shots/everyone";
+
 	public ImageParse(Context context) {
 		c = context;
 
 	}
 
-	/**
-	 * sends http request
-	 * @param link
-	 * @return
-	 */
-	public InputStream sendhttpRequest(String link) {
+	public String connectHTTP(String url) {
 		try {
-			url = new URL(link);
-			connection = (HttpURLConnection) url.openConnection();
-			Log.d("sucess", link);
-			return connection.getInputStream();
-			
-		} catch (Exception e) {
+			// create URl object and establish connection to internet
+			URL obj = new URL(url);
+			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+			// open buffer reader to prepare to read the page
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					con.getInputStream()));
+
+			String inputLine;
+			String result = "";
+
+			// reads the page and stores text into a string
+			while ((inputLine = reader.readLine()) != null) {
+				result = result + inputLine;
+			}
+			reader.close();
+
+			// returns the string which is in JSON format
+			return result;
+
+		} catch (MalformedURLException e) {
+			Log.d(TAG_HTTP_ERROR, e + "");
 			e.printStackTrace();
-			return null;
-
+		} catch (IOException e) {
+			Log.d(TAG_HTTP_ERROR, e + "");
+			e.printStackTrace();
+		} catch (Exception e) {
+			Log.d(TAG_HTTP_ERROR, e + "");
+			e.printStackTrace();
 		}
+		// returns null if any error occurs
+		return null;
 	}
 
-	/**
-	 * returns URL of img links
-	 * 
-	 * @param link
-	 * @return
-	 */
-	public List<String> getURLs() {
-		if (parsedContent == null) {
-			String TAG = "ERROR NULL STRING";
-			Log.d(TAG, "getURLs");
-		}
-		return parsedContent;
-	}
-
-	/**
-	 * reads content of http link and stores img links in parsedContent string
-	 * array
-	 * 
-	 * @param in
-	 */
-	public void parseURL(String urlLink) {
-		BufferedReader reader = null;
-		try {
-			InputStream stream = sendhttpRequest(urlLink);
-			//if stream is null, then replace invalid url with default url
-			if (stream == null) {
-				stream = sendhttpRequest("http://api.dribbble.com/shots/everyone");
-				String warningTAG = "User doesn't exist, please try again";
-				Log.d(warningTAG, urlLink);
-				
-			}
+	private List<String> getURLFromJson(String content) throws Exception{
+		
+		if(jsonString == null){ //throw exception
 			
-			// set content string to the contents in http site
-			reader = new BufferedReader(new InputStreamReader(stream));
-			String content = "";
-			while ((content = reader.readLine()) != null) {
-				if (content != null) {
-					// split the string to identify image link urls
-					parsedContent = content.split("image_url\":\"");
-					for (int i = 0; i < parsedContent.length; i++) {
-
-						// parse string to remove extra data at the end of url
-						// link
-						// application only handles .png and .jpq extensions
-						parsedContent[i] = parsedContent[i].split(".png")[0]
-								+ ".png";
-
-						if (parsedContent[i].contains("{")) {
-							parsedContent[i] = parsedContent[i].split(".jpg")[0]
-									+ ".jpg";
-						}
-
-					}
-
-				}
-			}
-			
+		} 
+		else {	
 			//new changes (add JSON), need to import
 			JSONObject jsonObj = new JSONObject(content);
-			JSONArray jsonArray = new JSONArray("shots");
+			JSONArray jsonArray = new JSONArray(TAG_SHOTS);
+
+			List<String> urlLinks = new List<String>();
 			
 			for(int i = 0; i < jsonArray.length(); i++){
-				JSONObject tmp = jsonArray.get(i);
-				
-				String imgURL = tmp.getString("image_url");
-				if(!imgURL.contains("gif")) parsedContent.add(imgURL);
-			}
-			
-			
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-					e.printStackTrace();
+				JSONObject tmp = jsonArray.getJSONObject(i);
+				String imgURL = tmp.getString(TAG_IMAGE_URL);
+				if(!imgURL.contains("gif")){
+					urlLinks.add(imgURL);
 				}
 			}
+			
+			if(urlLinks.isEmpty()){
+				String newJsonStr = connectHTTP(backupURL);
+				urlLinks = getURLFromJson(newJsonStr);
+			}
 		}
+		
+		return urlLinks;
+	}
+
+
+	
 	}
 
 }
